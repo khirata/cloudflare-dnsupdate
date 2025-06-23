@@ -1,9 +1,8 @@
 #!/bin/bash
 
-# A bash script to update a Cloudflare DNS A/AAAA record with the external IP of the source machine
-# Used to provide DDNS service for my home
+# A bash script to create/update a Cloudflare DNS A/AAAA record with the external IP of the source machine
 
-## Set environment variables
+## Set environment variables (see .cloudflare.tmpl)
 # zone : Cloudflare zone (e.g. yourdomain.com)
 # dnshost: hostname of the A/AAAA record (e.g. yourhost.yourdomain.com)
 # cloudflare_auth_email : Cloudflare username
@@ -68,7 +67,7 @@ dnsrecordid=$(echo $dnsrecord | jq -r .id)
 dnsv6=$(echo $dnsrecord | jq -r .content)
 
 if [[ "$ipv6" == "" ]]; then
-    echo "This host can not establish IPv6 connection"
+    echo "This host does not have public IPv6 address"
 elif [[ "$ipv6" == "$dnsv6" ]]; then
     echo "IPv6: $dnshost is currently set to $ipv6; no changes needed"
 else
