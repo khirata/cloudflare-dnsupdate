@@ -10,6 +10,7 @@
 source ~/.cloudflare
 
 # A/AAAA record with "dnsupdater" in comment field is updated (Note: tag field is not available for free tier)
+# The stored comment includes an ISO-8601 timestamp of the last update
 tag="dnsupdater"
 
 # Helper function for logging with ISO-8601 timestamp
@@ -88,7 +89,8 @@ update_record() {
     if [[ "$ip" == "$dnsip" ]]; then
         log "$type: $dnshost is currently set to $ip; no changes needed"
     else
-        local body="{\"type\":\"$type\",\"name\":\"$dnshost\",\"content\":\"$ip\",\"ttl\":1,\"proxied\":false,\"comment\":\"$tag\"}"
+        local comment="$tag $(date +"%Y-%m-%dT%H:%M:%S%z")"
+        local body="{\"type\":\"$type\",\"name\":\"$dnshost\",\"content\":\"$ip\",\"ttl\":1,\"proxied\":false,\"comment\":\"$comment\"}"
 
         if [[ -z "$dnsrecordid" || "$dnsrecordid" == "null" ]]; then
             # Create the record
